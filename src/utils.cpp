@@ -132,13 +132,13 @@ void matrix::install_pkg(std::string pkg_name) {
 	
 	const char *install_aur_pkg[] = {"makepkg", "-s", "-i", NULL};
 
-	if (!fs::exists(fs::path(pkg_current_location)))
-		matrix::download_pkg(pkg_name);
-	
 	if (fs::exists(fs::path(pkg_install_location))) {
 		std::cout << "package \033[1;32m" << pkg_name << "\033[00m already installed\n";
 		return;
 	}
+	
+	if (!fs::exists(fs::path(pkg_current_location)))
+		matrix::download_pkg(pkg_name);
 	
 	std::cout << "\033[1;32m:: \033[1;37mInstalling \033[1;32m" << pkg_name << "\033[1;37m please wait...\033[00m\n";
 	chdir(pkg_current_location.c_str());
