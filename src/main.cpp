@@ -1,54 +1,70 @@
-#include <boost/program_options.hpp>
-
 #include "../include/utils.h"
 
-namespace opt = boost::program_options;
-
 int main (int argc, char **argv) {
-	matrix::initialize_dirs(); // cache & install
+	const std::string option = (argv[1]) ? std::string(argv[1]) : "";
 	
-	std::string title;
-	title += "Matrix AUR Helper\n\n";
-	title += "Usage: matrix [-dhisu] [arg]\n\n";
-	title += "Help";
+	// cache & install
+	matrix::initialize_dirs();
 	
-	opt::options_description opt_list(title);
-	opt::variables_map opt_map;
-
-	opt_list.add_options()
-		("help,h", "Show this message")
-		("search,s", opt::value<std::string>(), "Search for 'arg' in AUR")
-		("update,u","Update packages list")
-		("download,d", opt::value<std::string>(), "Download the package especified")
-		("install,i", opt::value<std::string>(), "Install the package especified")
-		("remove,r", opt::value<std::string>(), "Uninstall the package especified")
-	;
+	std::string opt_title;
+	opt_title += "Matrix AUR Helper\n\n";
+	opt_title += "Usage: matrix [-dhirsu] [arg]\n\n";
+	opt_title += "Help:\n";
+	
+	std::string opt_list;
+	opt_list += "  -h, --help           \t Show this message\n";
+	opt_list += "  -s, --search   <arg> \t Search for 'arg' in AUR\n";
+	opt_list += "  -u, --update         \t Update packages list\n";
+	opt_list += "  -d, --download <arg> \t Download the package especified\n";
+	opt_list += "  -i, --install  <arg> \t Install the package especified\n";
+	opt_list += "  -r, --remove   <arg> \t Uninstall the package especified\n";
+	
+	std::map<std::string, std::pair<std::string, std::string>> opt_map = {
+		{"help"    , {"--help"    , "-h"}},
+		{"search"  , {"--search"  , "-s"}},
+		{"update"  , {"--update"  , "-u"}},
+		{"download", {"--download", "-d"}},
+		{"install" , {"--install" , "-i"}},
+		{"remove"  , {"--remove"  , "-r"}},
+	};
+	
+	auto check_option = [&option](auto opt) {
+		return (option == opt.first || option == opt.second);
+	};
 	
 	try {
-		opt::store(opt::parse_command_line(argc, argv, opt_list), opt_map);
-		opt::notify(opt_map);
-	} catch (opt::error& error) {
-		std::cerr << error.what() << std::endl;
-		return -1;
+	
+		// handler options
+		if (check_option(opt_map["help"]))
+		{
+			std::cout << opt_title << opt_list << std::endl;
+		}
+		else if (check_option(opt_map["search"]))
+		{
+			matrix::search_pkg(argv[2]);
+		}
+		else if (check_option(opt_map["update"]))
+		{
+			matrix::update_pkg_list();
+		}
+		else if (check_option(opt_map["download"]))
+		{
+			matrix::download_pkg(argv[2]);
+		}
+		else if (check_option(opt_map["install"]))
+		{
+			matrix::install_pkg(argv[2]);
+		}
+		else if (check_option(opt_map["remove"]))
+		{
+			matrix::uninstall_pkg(argv[2]);
+		}
+		
+	} catch (std::logic_error) {
+		std::cout << "\033[1;31m::\033[00m invalid argumment\n";
+	} catch (std::exception& e) {
+		std::cout << "error: " << e.what() << std::endl;
 	}
-	
-	if (opt_map.count("help"))
-		std::cout << opt_list << std::endl;
-	
-	if (opt_map.count("search"))
-		matrix::search_pkg(opt_map["search"].as<std::string>());
-	
-	if (opt_map.count("update"))
-		matrix::update_pkg_list();
-	
-	if (opt_map.count("download"))
-		matrix::download_pkg(opt_map["download"].as<std::string>());
-	
-	if (opt_map.count("install"))
-		matrix::install_pkg(opt_map["install"].as<std::string>());
-	
-	if (opt_map.count("remove"))
-		matrix::uninstall_pkg(opt_map["remove"].as<std::string>());
 	
     return 0;
 }
