@@ -1,5 +1,5 @@
 CXX = g++
-CXXFLAGS = -std=c++17 -lboost_program_options -lstdc++fs
+CXXFLAGS = -std=c++17 -lstdc++fs
 SRC = $(wildcard src/*.cpp)
 OBJ = $(SRC:.cpp=.o)
 BIN = matrix
