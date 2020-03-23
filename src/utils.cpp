@@ -42,6 +42,9 @@ void matrix::run_command(const char **args, bool) {
 
 // options functions
 void matrix::search_pkg(std::string str) {
+	if (!fs::exists(fs::path(root_cache_dir + "/packages.mah")))
+		matrix::update_pkg_list();
+	
 	// pacman legacy
 	std::cout << "\033[1;37mPacman packages:\n\033[1;34m" << std::flush;
 	
@@ -50,9 +53,6 @@ void matrix::search_pkg(std::string str) {
 	
 	// aur
 	std::cout << "\n\033[1;37mAUR packages:\n" << std::flush;
-	
-	if (!fs::exists(fs::path(root_cache_dir + "/packages.mah")))
-		matrix::update_pkg_list();
 	
 	std::regex reg (".*" + str + ".*");
 	
