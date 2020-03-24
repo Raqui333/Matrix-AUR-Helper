@@ -77,7 +77,7 @@ void matrix::update_pkg_list() {
 	const std::string url = matrix::AUR + "/packages.gz";
 	const std::string list_dir = root_cache_dir + "/packages.mah.gz";
 	
-	const char *download_aur_pkg_list[] = {"curl", "--create-dirs", url.c_str(), "-o", list_dir.c_str(), NULL};
+	const char *download_aur_pkg_list[] = {"curl", url.c_str(), "-o", list_dir.c_str(), NULL};
 	const char *unzip_aur_pkg_list[] = {"gzip", "-d", "-f", "-v", list_dir.c_str(), NULL};
 	
 	std::cout << "\033[1;32m:: \033[1;37mSyncing packages list...\033[00m\n";
@@ -95,6 +95,9 @@ void matrix::download_pkg(std::string pkg_name) {
 	
 	const char *download_aur_pkg[] = {"git", "clone", "-q", url.c_str(), download_dir.c_str(), NULL};
 
+	if (!fs::exists(fs::path(root_cache_dir + "/packages.mah")))
+		matrix::update_pkg_list();
+		
 	if (fs::exists(fs::path(download_dir))) {
 		std::cout << "package \033[1;32m" << pkg_name << "\033[00m already downloaded\n";
 		return;
