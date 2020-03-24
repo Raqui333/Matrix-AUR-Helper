@@ -1,6 +1,6 @@
 #include <getopt.h>
 
-#include "../include/utils.h"
+#include "../include/packages.h"
 
 int main (int argc, char **argv) {
 	// cache & install
@@ -23,7 +23,7 @@ int main (int argc, char **argv) {
 		{"update"  , no_argument      , NULL, 'u'},
 		{"download", required_argument, NULL, 'd'},
 		{"install" , required_argument, NULL, 'i'},
-		{"remove"  , required_argument, NULL, 'r'}
+		{"remove"  , required_argument, NULL, 'r'},
 	};
 	
 	int opt_handler = getopt_long(argc, argv, "d:hi:r:s:u", opt_list, NULL);
