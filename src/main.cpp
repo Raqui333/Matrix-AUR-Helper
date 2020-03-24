@@ -3,6 +3,8 @@
 #include "../include/packages.h"
 
 int main (int argc, char **argv) {
+	const std::string version = "v1.0";
+	
 	// cache & install
 	matrix::initialize_dirs();
 	
@@ -24,9 +26,10 @@ int main (int argc, char **argv) {
 		{"download", required_argument, NULL, 'd'},
 		{"install" , required_argument, NULL, 'i'},
 		{"remove"  , required_argument, NULL, 'r'},
+		{"version" , no_argument      , NULL, 'v'},
 	};
 	
-	int opt_handler = getopt_long(argc, argv, "d:hi:r:s:u", opt_list, NULL);
+	int opt_handler = getopt_long(argc, argv, "d:hi:r:s:uv", opt_list, NULL);
 	
 	switch (opt_handler) {
 		case 'h':
@@ -46,6 +49,9 @@ int main (int argc, char **argv) {
 			break;
 		case 'r':
 			matrix::uninstall_pkg(optarg);
+			break;
+		case 'v':
+			std::cout << version << std::endl;
 			break;
 	}
 	
