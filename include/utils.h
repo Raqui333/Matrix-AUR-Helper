@@ -21,14 +21,7 @@ namespace matrix {
 	extern const std::string AUR;
 	
 	void run_command(const char**);
-	void run_command(const char**, bool); // ignore exit codes
-	
-	// options functions
-	void search_pkg(std::string);
-	void update_pkg_list();
-	void download_pkg(std::string);
-	void install_pkg(std::string);
-	void uninstall_pkg(std::string);
+	bool path_exists(std::string);
 	
 	// init
 	void initialize_dirs();
