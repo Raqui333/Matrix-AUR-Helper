@@ -85,8 +85,10 @@ void matrix::download_pkg(std::string name) {
 	
 	if (exit_code == 0)
 		std::cout << "\033[1;32m:: \033[1;38mDownload finished\033[00m\n";
-	else
-		std::cout << "\033[1;32m:: \033[1;31mDownload failed!\033[00m\n";
+	else {
+		std::cout << "\033[1;32m:: \033[1;31mPackage does not exist!\033[00m\n";
+		exit(-1);
+	}
 }
 
 void matrix::install_pkg(std::string name) {
@@ -125,4 +127,52 @@ void matrix::uninstall_pkg(std::string name) {
 		fs::remove_all(fs::path(installed_pkg));
 	
 	std::cout << "\033[1;32m:: \033[1;38mUninstall completed\033[00m\n";
+}
+
+void matrix::query_pkg(std::string name) {
+	const std::string cached_pkg = matrix::cache_dir + "/" + name;
+	const std::string installed_pkg = matrix::install_dir + "/" + name;
+	
+	auto query_it = [&name] (auto query_dir) {
+		std::cout << "\033[1;32m:: \033[1;38m Info about \033[1;32m" << name << "\033[1;38m package:\n";
+		
+		std::ifstream pkg(query_dir + "/PKGBUILD");
+		
+		std::map<std::string, std::string> info_item = {
+			{"pkgname", "Name"        },
+			{"pkgver" , "Version"     },
+			{"pkgdesc", "Description" },
+			{"url"    , "URL"         },
+			{"arch"   , "Architecture"},
+			{"license", "Licenses"    },
+			{"depends", "Depends On"  },
+		};
+		
+		std::regex reg("^(pkg(name|ver|desc)|license|url|depends|arch)=");
+		std::string line;
+		
+		if (pkg.is_open()) {
+			while (std::getline(pkg, line)) {
+				if (std::regex_search(line, reg)) {
+					std::size_t delim = line.find("=");
+					
+					std::string first_field  = line.substr(0, delim);
+					std::string second_field = line.substr(delim + 1, line.length());
+					
+					std::cout << "\033[1;32m\t" << std::left << std::setw(20);
+					std::cout << info_item[first_field] << "\033[00m" << second_field << "\n";
+				}
+			}
+			pkg.close();
+		}
+	};
+	
+	if (matrix::path_exists(installed_pkg))
+		query_it(installed_pkg);
+	else if (matrix::path_exists(cached_pkg))
+		query_it(cached_pkg);
+	else {
+		matrix::download_pkg(name);
+		query_it(cached_pkg);
+	}
 }
