@@ -9,6 +9,8 @@
 #include <regex>
 #include <filesystem>
 #include <fstream>
+#include <map>
+#include <iomanip>
 
 namespace fs = std::filesystem;
 
@@ -22,6 +24,7 @@ namespace matrix {
 	
 	void run_command(const char**);
 	bool path_exists(std::string);
+	void cache_clear();
 	
 	// init
 	void initialize_dirs();
