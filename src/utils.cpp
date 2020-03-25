@@ -27,6 +27,11 @@ bool matrix::path_exists(std::string path) {
 	return (fs::exists(fs::path(path)));
 }
 
+void matrix::cache_clear() {
+	fs::remove_all(fs::path(matrix::cache_dir));
+	matrix::initialize_dirs();
+}
+
 // init
 void matrix::initialize_dirs() {
 	if (!fs::is_directory(fs::path(cache_dir)))	fs::create_directory(cache_dir);
