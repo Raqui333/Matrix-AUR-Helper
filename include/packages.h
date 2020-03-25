@@ -10,6 +10,7 @@ namespace matrix {
 	void download_pkg(std::string);
 	void install_pkg(std::string);
 	void uninstall_pkg(std::string);
+	void query_pkg(std::string);
 }
 
 #endif
