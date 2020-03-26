@@ -101,7 +101,7 @@ void matrix::install_pkg(std::string name) {
     const std::string pkg_in_cache   = matrix::cache_dir + "/" + name;
     const std::string pkg_in_install = matrix::install_dir + "/" + name;
 
-    const char *install_aur_pkg[] = {"makepkg", "-s", "-i", NULL};
+    const char *install_aur_pkg[] = {"makepkg", "-s", "-i", "-c", NULL};
 
     if (matrix::path_exists(pkg_in_install)) {
         std::cout << "package \033[1;32m" << name
