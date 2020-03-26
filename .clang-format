@@ -1,0 +1,9 @@
+BasedOnStyle: LLVM
+Language: Cpp
+Standard: Cpp11
+IndentWidth: 4
+UseTab: Never
+AllowShortLoopsOnASingleLine: true
+MaxEmptyLinesToKeep: 1
+NamespaceIndentation: All
+AlignConsecutiveAssignments: true
