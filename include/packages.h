@@ -13,4 +13,4 @@ namespace matrix {
     void query_pkg(std::string);
 } // namespace matrix
 
-#endif
+#endif // MATRIX_PACKAGES_H_

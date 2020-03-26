@@ -31,4 +31,4 @@ namespace matrix {
     void initialize_dirs();
 } // namespace matrix
 
-#endif /* MATRIX_UTILS_H_ */
+#endif // MATRIX_UTILS_H_
