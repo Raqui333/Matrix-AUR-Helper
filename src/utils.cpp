@@ -5,7 +5,7 @@ const std::string matrix::root_dir =
     fs::read_symlink("/proc/self/exe").parent_path();
 
 const std::string matrix::cache_dir   = matrix::root_dir + "/cache";
-const std::string matrix::install_dir = matrix::root_dir + "/install";
+const std::string matrix::install_dir = matrix::root_dir + "/local";
 const std::string matrix::AUR         = "https://aur.archlinux.org";
 
 // utils
