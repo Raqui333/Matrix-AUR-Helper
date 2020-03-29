@@ -1,0 +1,36 @@
+#compdef matrix
+
+## ZSH
+local -a state
+typeset -A opt_args
+
+## MATRIX
+m_cache_dir=$(matrix --cache-dir-location)
+m_install_dir=$(matrix --install-dir-location)
+
+packages_list=( $(< "${m_cache_dir}/packages.mah") )
+packages_installed=( $(pacman -Qq) $(ls ${m_install_dir}) )
+
+options_list=(
+	{--help,-h}'[Show help message]'
+	{--search,-s}'[Search for package]: :->aur_pkgs'
+	{--update,-u}'[Sync packages list]'
+	{--download,-d}'[Download a package]: :->aur_pkgs'
+	{--install,-i}'[Install a package]: :->aur_pkgs'
+	{--remove,-r}'[Uninstall a package]: :->local_pkgs'
+	{--query,-q}'[Show info about a package]: :->aur_pkgs'
+	'--ccache[Clear the cache directory]'
+	'--version[Print the software version]'
+)
+
+_arguments ${options_list[@]}
+
+case ${state} in
+	aur_pkgs)
+		_values ${packages_list[@]}
+		;;
+	local_pkgs)
+		_values ${packages_installed[@]}
+		;;
+esac
+

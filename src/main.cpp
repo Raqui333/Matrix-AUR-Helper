@@ -26,6 +26,9 @@ int main(int argc, char **argv) {
     enum {
         CCACHE  = 1000,
         VERSION = 1001,
+        // dev options
+        CACHEDIR   = 2000,
+        INSTALLDIR = 2001,
     };
 
     // clang-format off
@@ -37,9 +40,12 @@ int main(int argc, char **argv) {
         {"install" , required_argument, NULL, 'i'},
         {"remove"  , required_argument, NULL, 'r'},
         {"query"   , required_argument, NULL, 'q'},
-        // long only
+        // long options only
         {"ccache" , no_argument, NULL, CCACHE},
         {"version", no_argument, NULL, VERSION},
+        // dev options only
+        {"cache-dir-location"  , no_argument, NULL, CACHEDIR},
+        {"install-dir-location", no_argument, NULL, INSTALLDIR}
     };
     // clang-format on
 
@@ -64,11 +70,19 @@ int main(int argc, char **argv) {
     case 'q':
         matrix::query_pkg(optarg);
         break;
+    // long options
     case CCACHE:
         matrix::cache_clear();
         break;
     case VERSION:
         std::cout << version << std::endl;
+        break;
+    // dev option
+    case CACHEDIR:
+        std::cout << matrix::cache_dir << std::endl;
+        break;
+    case INSTALLDIR:
+        std::cout << matrix::install_dir << std::endl;
         break;
     case 'h': /* fall through */
     default:
