@@ -3,7 +3,7 @@
 // options
 void matrix::search_pkg(std::string name) {
     if (!matrix::path_exists(matrix::cache_dir + "/packages.mah"))
-        matrix::update_pkg_list();
+        matrix::sync_pkg_list();
 
     // pacman legacy
     const char *pacman_search[] = {"pacman", "-S",         "-s",
@@ -31,7 +31,7 @@ void matrix::search_pkg(std::string name) {
     }
 }
 
-void matrix::update_pkg_list() {
+void matrix::sync_pkg_list() {
     const std::string url         = matrix::AUR + "/packages.gz";
     const std::string output_file = matrix::cache_dir + "/packages.mah.gz";
 
@@ -47,7 +47,7 @@ void matrix::update_pkg_list() {
     std::cout << "\033[1;32m:: \033[1;38mDescrompessing...\033[00m\n";
     matrix::run_command(unzip_aur_pkg_list);
 
-    std::cout << "\033[1;32m:: \033[1;38mSyncing completed\033[00m\n";
+    std::cout << "\033[1;32m:: \033[1;38mSync finished\033[00m\n";
 }
 
 void matrix::download_pkg(std::string name) {
@@ -58,7 +58,7 @@ void matrix::download_pkg(std::string name) {
         "git", "clone", "-q", url.c_str(), download_dir.c_str(), NULL};
 
     if (!matrix::path_exists(matrix::cache_dir + "/packages.mah"))
-        matrix::update_pkg_list();
+        matrix::sync_pkg_list();
 
     if (matrix::path_exists(download_dir)) {
         std::cout << "package \033[1;32m" << name
@@ -118,7 +118,7 @@ void matrix::install_pkg(std::string name) {
     chdir(pkg_in_cache.c_str());
     matrix::run_command(install_aur_pkg);
 
-    std::cout << "\033[1;32m:: \033[1;38mFinishing installation...\033[00m\n";
+    std::cout << "\033[1;32m:: \033[1;38mFinishing installation\033[00m\n";
 
     fs::copy(fs::path(pkg_in_cache), fs::path(pkg_in_install));
     fs::remove_all(fs::path(pkg_in_cache));
@@ -140,7 +140,7 @@ void matrix::uninstall_pkg(std::string name) {
     if (matrix::path_exists(pkg_in_install))
         fs::remove_all(fs::path(pkg_in_install));
 
-    std::cout << "\033[1;32m:: \033[1;38mUninstall completed\033[00m\n";
+    std::cout << "\033[1;32m:: \033[1;38mUninstall finished\033[00m\n";
 }
 
 void matrix::query_pkg(std::string name) {
@@ -196,4 +196,26 @@ void matrix::query_pkg(std::string name) {
         matrix::download_pkg(name);
         matrix::query_pkg(name);
     }
+}
+
+void matrix::update_pkg(std::string name) {
+    const std::string pkg_in_cache   = matrix::cache_dir + "/" + name;
+    const std::string pkg_in_install = matrix::install_dir + "/" + name;
+
+    if (matrix::path_exists(pkg_in_cache))
+        fs::remove_all(fs::path(pkg_in_cache));
+
+    if (matrix::path_exists(pkg_in_install)) {
+        fs::remove_all(fs::path(pkg_in_install));
+    } else {
+        std::cout << "\033[1;31m:: \033[00mpackage " << name
+                  << " is not installed\n";
+        return;
+    }
+
+    std::cout << "\033[1;32m:: \033[1;38mUpdating \033[32m" << name
+              << " \033[1;38mplease wait...\033[00m\n";
+    matrix::install_pkg(name);
+
+    std::cout << "\033[1;32m:: \033[1;38mUpdate finished\033[00m\n";
 }
