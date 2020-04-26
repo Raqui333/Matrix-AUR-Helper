@@ -73,6 +73,7 @@ int main(int argc, char **argv) {
         break;
     case 'y':
         matrix::sync_pkg_list();
+        break;
     // long options
     case CCACHE:
         matrix::cache_clear();
